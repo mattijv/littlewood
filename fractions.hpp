@@ -62,7 +62,7 @@ namespace fractions {
     std::vector<convergent_pair<T>> convergent_pairs(int N, uint subdivisions = 0) {
         std::vector<convergent<T>> convergents = {};
         
-        for (std::size_t i = 2; i < N; i++) {
+        for (int i = 2; i < N; i++) {
             convergents.push_back({
                 {static_cast<T>(1), static_cast<T>(i)},
                 {static_cast<T>(0), static_cast<T>(1)}
@@ -89,7 +89,7 @@ namespace fractions {
         }
 
         if (subdivisions > 0) {
-            for (int i = 0; i < subdivisions; i++) {
+            for (uint i = 0; i < subdivisions; i++) {
                 std::vector<convergent_pair<T>> next = {};
                 for (auto& pair: pairs) {
                     subdivide(pair, N, next);
