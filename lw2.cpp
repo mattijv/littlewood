@@ -15,13 +15,13 @@ namespace mp = boost::multiprecision;
 //#define TRACK_LARGEST
 #define TRACK_MAX_DEPTH
 
-#define BIGINT NTL::ZZ
+#define BIGINT mp::int1024_t
 #define i(number) static_cast<BIGINT>(number)
 //#define i(number) NTL::ZZ(number)
 //#define BIGINT NTL::ZZ
 typedef BIGINT bigint;
 
-long N = 10;
+long N = 9;
 
 #ifdef TRACK_LARGEST
 bigint chonker = i(0);
@@ -140,7 +140,7 @@ bool pair_meets_littlewood_criteria(const convergent_pair& pair) {
     bigint bca_rem = beta_den_comp_alpha_num;
     bigint ma_rem = multiple_alpha;
 
-    bigint max_remainder = 1 + std::max(i(N), pair.beta.previous.den / (N*N));
+    bigint max_remainder = 1 + std::max(i(N), pair.beta.previous.den / (N * N));
     bigint target_remainder = i(1);
     
     while (target_remainder < max_remainder) {
@@ -228,44 +228,6 @@ bool pair_meets_littlewood_criteria(const convergent_pair& pair) {
     return false;
 }
 
-std::vector<convergent> initial_convergents() {
-    std::vector<convergent> convergents = {};
-    
-    for (int i = 2; i < N; i++) {
-        convergents.push_back({
-            {i(1),i(i)},
-            {i(0),i(1)}
-        });
-    }
-    
-    return convergents;
-}
-
-std::vector<convergent_pair> create_convergent_pairs(std::vector<convergent> convergents) {
-    std::vector<convergent_pair> pairs = {};
-    
-    for (uint i = 1; i < convergents.size(); i++) {
-        for (uint j = 0; j < i; j++) {
-            convergent a = convergents[i];
-            convergent b = convergents[j];
-            
-            /*
-            if (a.current.den * b.current.den >= 2 * N) {
-                continue;
-            }*/
-            
-            if (a.current.den < b.current.den) {
-                pairs.push_back({a, b});
-            } else {
-                pairs.push_back({b, a});
-            }
-        }
-    }
-    
-    return pairs;
-}
-
-
 void subdivide_and_append_new_pairs(const convergent_pair& pair, std::vector<convergent_pair>& new_pairs) {
     convergent primary, secondary;
     if (pair.alpha.current.den < pair.beta.current.den) {
@@ -287,6 +249,59 @@ void subdivide_and_append_new_pairs(const convergent_pair& pair, std::vector<con
     }
 }
 
+std::vector<convergent> initial_convergents() {
+    std::vector<convergent> convergents = {};
+    
+    for (int i = 2; i < N; i++) {
+        convergents.push_back({
+            {i(1),i(i)},
+            {i(0),i(1)}
+        });
+    }
+    
+    return convergents;
+}
+
+std::vector<convergent_pair> create_convergent_pairs() {
+    std::vector<convergent> convergents = {};
+    
+    for (int i = 2; i < N; i++) {
+        convergents.push_back({
+            {i(1),i(i)},
+            {i(0),i(1)}
+        });
+    }
+    
+    std::vector<convergent_pair> pairs = {};
+    
+    for (uint i = 0; i < convergents.size(); i++) {
+        for (uint j = 0; j <= i; j++) {
+            convergent a = convergents[i];
+            convergent b = convergents[j];
+            
+            if (a.current.den * b.current.den >= 2 * N) {
+                continue;
+            }
+
+            if (a.current.den < b.current.den) {
+                pairs.push_back({a, b});
+            } else {
+                pairs.push_back({b, a});
+            }
+        }
+    }
+
+    for (int i = 0; i <= 2; i++) {
+        std::vector<convergent_pair> next = {};
+        for (auto& pair: pairs) {
+            subdivide_and_append_new_pairs(pair, next);
+        }
+        swap(next, pairs);
+    }
+    
+    return pairs;
+}
+
 void check_pair(const convergent_pair& pair, int depth) {
     if (pair_meets_littlewood_criteria(pair)) {
         #ifdef TRACK_MAX_DEPTH
@@ -294,6 +309,8 @@ void check_pair(const convergent_pair& pair, int depth) {
         #endif
         return;
     }
+
+    assert(depth < 80);
 
     // get best Q from pair_meets_littlewood_criteria
     // in subdivide_etc calculate for each i > 1
@@ -332,7 +349,7 @@ int main(int argc, char* argv[]) {
     int n_threads = vm.count("threads") ? vm["threads"].as<int>() : 1;
     */
     int n_threads = 8;
-    auto pairs = create_convergent_pairs(initial_convergents());
+    auto pairs = create_convergent_pairs();
 
     auto rd = std::random_device {};
     auto rng = std::default_random_engine {rd()};
