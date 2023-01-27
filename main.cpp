@@ -37,10 +37,11 @@ void check_pair_list(const std::span<fractions::convergent_pair<T>>& pairs, int 
 struct configuration {
     int N;
     uint n_threads;
+    uint subdivisions;
 };
 
 configuration parse_cli_arguments(int argc, char* argv[]) {
-    configuration config = {10, 1};
+    configuration config = {10, 1, 0};
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
             auto argument = std::string(argv[i]);
@@ -48,6 +49,8 @@ configuration parse_cli_arguments(int argc, char* argv[]) {
                 config.N = std::stoi(argument.substr(2));
             } else if (argument.substr(0,2) == "-j") {
                 config.n_threads = std::stoi(argument.substr(2));
+            } else if (argument.substr(0,2) == "-s") {
+                config.subdivisions = std::stoi(argument.substr(2));
             }
         }
     }
@@ -63,8 +66,8 @@ int main(int argc, char* argv[]) {
 
     std::cout << fmt::format("Running on {} thread(s) with N={}.", config.n_threads, config.N) << std::endl;
 
-    auto pairs = fractions::convergent_pairs<BigInt>(config.N, 3);
-    std::cout << fmt::format("Initial pairs: {}", pairs.size()) << std::endl;
+    auto pairs = fractions::convergent_pairs<BigInt>(config.N, config.subdivisions);
+    std::cout << fmt::format("Initial pairs (from {} subdivisions): {}", config.subdivisions, pairs.size()) << std::endl;
 
     // Shuffle the pairs so that the different sized numerators are evenly split among the
     // threads. Otherwise one thread might end up processing all the pathological ones, and we
