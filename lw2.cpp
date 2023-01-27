@@ -37,7 +37,6 @@ struct rational {
 
 struct convergent {
     rational current, previous;
-    int origin;
 };
 
 struct convergent_pair {
@@ -50,8 +49,7 @@ convergent next_convergent(const convergent& base, bigint digit) {
             digit * base.current.num + base.previous.num,
             digit * base.current.den + base.previous.den
         },
-        base.current,
-        base.origin
+        base.current
     };
 };
 
@@ -231,34 +229,16 @@ bool pair_meets_littlewood_criteria(const convergent_pair& pair) {
 }
 
 std::vector<convergent> initial_convergents() {
-    std::vector<convergent> candidates = {};
-    std::vector<convergent> suitable = {};
+    std::vector<convergent> convergents = {};
     
     for (int i = 2; i < N; i++) {
-        candidates.push_back({
+        convergents.push_back({
             {i(1),i(i)},
-            {i(0),i(1)},
-            i
+            {i(0),i(1)}
         });
     }
     
-    // can be removed
-    std::vector<convergent> next = {};
-    while (candidates.size() > 0) {
-        for (auto candidate : candidates) {
-            if (candidate.current.den > 2 * N) {
-                suitable.push_back(candidate);
-            } else {
-                for (int i = 1; i < N; i++) {
-                    next.push_back(next_convergent(candidate, i(i)));
-                }
-            }
-        }
-        swap(candidates, next);
-        next.clear();
-    }
-    
-    return suitable;
+    return convergents;
 }
 
 std::vector<convergent_pair> create_convergent_pairs(std::vector<convergent> convergents) {
@@ -269,15 +249,10 @@ std::vector<convergent_pair> create_convergent_pairs(std::vector<convergent> con
             convergent a = convergents[i];
             convergent b = convergents[j];
             
-            
-            if (a.origin * b.origin >= 2 * N) {
+            /*
+            if (a.current.den * b.current.den >= 2 * N) {
                 continue;
-            }
-            
-            // remove this
-            if (a.current.den == b.current.den || a.previous.den == b.previous.den) {
-                continue;
-            }
+            }*/
             
             if (a.current.den < b.current.den) {
                 pairs.push_back({a, b});
@@ -356,7 +331,7 @@ int main(int argc, char* argv[]) {
 
     int n_threads = vm.count("threads") ? vm["threads"].as<int>() : 1;
     */
-    int n_threads = 1;
+    int n_threads = 8;
     auto pairs = create_convergent_pairs(initial_convergents());
 
     auto rd = std::random_device {};
