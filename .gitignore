@@ -1,3 +1,3 @@
-*
-!*.cpp
-!*.hpp
+build/*
+!build/.gitkeep
+.vscode/
