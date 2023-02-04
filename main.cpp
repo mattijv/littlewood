@@ -3,6 +3,7 @@
 #include <thread>
 #include <random>
 #include <string>
+#include <cassert>
 #define FMT_HEADER_ONLY
 #include <fmt/format.h>
 #include "fractions.hpp"
