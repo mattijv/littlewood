@@ -4,6 +4,7 @@
 #include <random>
 #include <string>
 #include <cassert>
+#include <cmath>
 #define FMT_HEADER_ONLY
 #include <fmt/format.h>
 #include "fractions.hpp"
@@ -40,8 +41,11 @@ void check_pair(const fractions::convergent_pair<T>& pair, int depth, int N) {
         return;
     }
 
-    // Napkin math assumption of a safe limit where we won't overflow the 1024bit fixed width int
-    assert(depth < 80);
+    #if defined(FIXED_WIDTH_INTEGERS) && defined(OVERFLOW_PROTECTION)
+    // If we are using fixed width integers, this check should guarantee that we can't overflow the
+    // integer in the next iteration.
+    assert(boost::multiprecision::pow(pair.alpha.current.den, 5) < boost::math::tools::max_value<BigInt>() / (static_cast<BigInt>(2 * std::pow(N, 8))));
+    #endif
 
     std::vector<fractions::convergent_pair<T>> child_pairs = {};
     fractions::subdivide(pair, N, child_pairs);
