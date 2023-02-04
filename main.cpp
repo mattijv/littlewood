@@ -9,8 +9,30 @@
 #include "fractions.hpp"
 #include "littlewood.hpp"
 
+#ifdef FIXED_WIDTH_INTEGERS
+#ifndef INTEGER_WIDTH
+#define INTEGER_WIDTH 1024
+#endif
 #include <boost/multiprecision/cpp_int.hpp>
+#include <boost/math/tools/precision.hpp>
+#if INTEGER_WIDTH == 128
+using BigInt = boost::multiprecision::int128_t;
+#elif INTEGER_WIDTH == 256
+using BigInt = boost::multiprecision::int256_t;
+#elif INTEGER_WIDTH == 512
+using BigInt = boost::multiprecision::int512_t;
+#elif INTEGER_WIDTH == 1024
 using BigInt = boost::multiprecision::int1024_t;
+#endif
+#endif
+
+#ifndef FIXED_WIDTH_INTEGERS
+#include <NTL/ZZ.h>
+#define ARBITRARY_WIDTH_INTEGERS
+// Use arbitrary integers instead.
+using BigInt = NTL::ZZ;
+#endif
+
 
 template <typename T>
 void check_pair(const fractions::convergent_pair<T>& pair, int depth, int N) {
@@ -66,6 +88,14 @@ int main(int argc, char* argv[]) {
     auto config = parse_cli_arguments(argc, argv);
 
     std::cout << fmt::format("Running on {} thread(s) with N={}.", config.n_threads, config.N) << std::endl;
+
+    #ifdef FIXED_WIDTH_INTEGERS
+    std::cout << fmt::format("Using fixed width integers, with bit width of {}.", INTEGER_WIDTH) << std::endl;
+    #endif
+
+    #ifdef ARBITRARY_WIDTH_INTEGERS
+    std::cout << fmt::format("Using arbitrary sized integers.") << std::endl;
+    #endif
 
     auto pairs = fractions::convergent_pairs<BigInt>(config.N, config.subdivisions);
     std::cout << fmt::format("Initial pairs (from {} subdivisions): {}", config.subdivisions, pairs.size()) << std::endl;
