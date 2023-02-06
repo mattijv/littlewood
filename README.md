@@ -9,4 +9,6 @@ The code depends on [GMP](https://gmplib.org/) for the arbitrary precision
 integer math, and on [Boost](https://www.boost.org/) for wide fixed width
 integer math.
 
+The code uses [{fmt}](https://github.com/fmtlib/fmt) for string formatting.
+
 Check the make file for options on compiling and running the program.
