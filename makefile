@@ -3,7 +3,7 @@ compiler = g++
 common_flags = -g -O2 -std=c++20 -pthread -march=native
 gmp_libs = -lntl -lgmp
 target = main.cpp
-output = -o build/lw3
+output = -o build/lw
 bits ?= 256
 
 # Run options
@@ -21,7 +21,7 @@ compile-fixed-safe:
 	$(compiler) $(common_flags) $(target) $(output) -DFIXED_WIDTH_INTEGERS -DINTEGER_WIDTH=$(bits) -DOVERFLOW_PROTECTION
 
 _run:
-	/usr/bin/time --format="Executed in %E" ./build/lw3 -N$(N) -j$(threads) -s$(subdivisions)
+	/usr/bin/time --format="Executed in %E" ./build/lw -N$(N) -j$(threads) -s$(subdivisions)
 
 run: compile _run
 
