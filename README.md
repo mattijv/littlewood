@@ -11,4 +11,4 @@ integer math.
 
 The code uses [{fmt}](https://github.com/fmtlib/fmt) for string formatting.
 
-Check the make file for options on compiling and running the program.
+Check the makefile for options on compiling and running the program.
