@@ -10,6 +10,8 @@ bits ?= 256
 N ?= 9
 threads ?= 1
 subdivisions = 0
+buckets ?= 1
+bucket ?= 1
 
 compile:
 	$(compiler) $(common_flags) $(target) $(output) $(gmp_libs)
