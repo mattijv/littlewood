@@ -22,8 +22,11 @@ compile-fixed:
 compile-fixed-safe:
 	$(compiler) $(common_flags) $(target) $(output) -DFIXED_WIDTH_INTEGERS -DINTEGER_WIDTH=$(bits) -DOVERFLOW_PROTECTION
 
-_run:
-	/usr/bin/time --format="Executed in %E" ./build/lw -N$(N) -j$(threads) -s$(subdivisions)
+show-start-time:
+	@date
+
+_run: show-start-time
+	@/usr/bin/time --format="Executed in %E" ./build/lw -N$(N) -j$(threads) -s$(subdivisions) -B$(buckets) -b$(bucket)
 
 run: compile _run
 
