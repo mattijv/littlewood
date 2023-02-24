@@ -199,21 +199,39 @@ int main(int argc, char* argv[]) {
 
     auto config = parse_cli_arguments(argc, argv);
 
-    std::cout << fmt::format("Running on {} thread(s) with N={}.", config.n_threads, config.N) << std::endl;
+    std::cout << fmt::format(
+        "Running on {} thread(s) with N={}.",
+        config.n_threads,
+        config.N
+    ) << std::endl;
 
     #ifdef FIXED_WIDTH_INTEGERS
-    std::cout << fmt::format("Using fixed width integers, with bit width of {}.", INTEGER_WIDTH) << std::endl;
+    std::cout << fmt::format(
+        "Using fixed width integers, with bit width of {}.",
+        INTEGER_WIDTH
+    ) << std::endl;
     #endif
 
     #ifdef ARBITRARY_WIDTH_INTEGERS
-    std::cout << fmt::format("Using arbitrary sized integers.") << std::endl;
+    std::cout << fmt::format(
+        "Using arbitrary sized integers."
+    ) << std::endl;
     #endif
 
     auto pairs = fractions::convergent_pairs<BigInt>(config.N, config.subdivisions);
-    std::cout << fmt::format("Initial pairs (from {} subdivisions): {}", config.subdivisions, pairs.size()) << std::endl;
+    std::cout << fmt::format(
+        "Initial pairs (from {} subdivisions): {}",
+        config.subdivisions,
+        pairs.size()
+    ) << std::endl;
 
     auto bucket = select_bucket<BigInt>(pairs, config);
-    std::cout << fmt::format("Pairs split into {} buckets, processing bucket #{} which has {} pairs.", config.buckets, config.bucket, bucket.size()) << std::endl;
+    std::cout << fmt::format(
+        "Pairs split into {} buckets, processing bucket #{} which has {} pairs.",
+        config.buckets,
+        config.bucket,
+        bucket.size()
+    ) << std::endl;
 
     thread_count = config.n_threads;
 
