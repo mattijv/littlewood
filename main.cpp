@@ -157,6 +157,8 @@ void process(std::vector<fractions::convergent_pair<T>>& queue, int N) {
             fractions::subdivide(pair, N, child_pairs);
             // and add them to the work queue.
             work_queue_mutex.lock();
+            // The new pairs are added at the end of the queue so the work is done in a depth-first-ish way,
+            // which helps with keeping the memory requirements fairly constant.
             queue.insert(std::end(queue), std::begin(child_pairs), std::end(child_pairs));
             work_queue_mutex.unlock();
         } else {
