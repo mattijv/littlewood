@@ -9,7 +9,7 @@
 #include <functional>
 #include <chrono>
 #define FMT_HEADER_ONLY
-#include <fmt/format.h>
+#include "dependencies/fmt/include/fmt/format.h"
 #include "fractions.hpp"
 #include "littlewood.hpp"
 
