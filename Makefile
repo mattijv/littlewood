@@ -9,7 +9,8 @@ boost_path = $(deps_directory)/$(boost_directory)
 
 # Compilation options
 compiler = g++
-common_flags = -g -O2 -std=c++20 -pthread -march=native
+debug = -g
+common_flags = -O2 -std=c++20 -pthread -march=native
 gmp_libs = -lntl -lgmp
 boost_lib = -I $(boost_path)
 target = main.cpp
@@ -35,13 +36,13 @@ $(boost_path):
 
 # Compilation targets
 compile: $(fmt_path)
-	$(compiler) $(common_flags) $(target) $(output) $(gmp_libs)
+	$(compiler) $(debug) $(common_flags) $(target) $(output) $(gmp_libs)
 
 compile-fixed: $(fmt_path) $(boost_path)
-	$(compiler) $(common_flags) $(boost_lib) $(target) $(output) -DFIXED_WIDTH_INTEGERS -DINTEGER_WIDTH=$(bits)
+	$(compiler) $(debug) $(common_flags) $(boost_lib) $(target) $(output) -DFIXED_WIDTH_INTEGERS -DINTEGER_WIDTH=$(bits)
 
 compile-fixed-safe: $(fmt_path) $(boost_path)
-	$(compiler) $(common_flags) $(boost_lib) $(target) $(output) -DFIXED_WIDTH_INTEGERS -DINTEGER_WIDTH=$(bits) -DOVERFLOW_PROTECTION
+	$(compiler) $(debug) $(common_flags) $(boost_lib) $(target) $(output) -DFIXED_WIDTH_INTEGERS -DINTEGER_WIDTH=$(bits) -DOVERFLOW_PROTECTION
 
 # Run targets
 show-start-time:
