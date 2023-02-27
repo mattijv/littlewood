@@ -141,8 +141,9 @@ void process(std::vector<fractions::convergent_pair<T>>& queue, int N) {
             queue.pop_back();
             work_queue_mutex.unlock();
 
-            // The pair passes the criteria, so we can forget about it and jump back to the start of the loop.
-            if (LW::meets_littlewood_criteria(pair, N)) {
+            LW::littlewood_result result = LW::meets_littlewood_criteria(pair, N);
+            if (result.meets_criteria) {
+                // The pair passes the criteria, so we can forget about it and jump back to the start of the loop.
                 continue;
             }
 
@@ -152,9 +153,13 @@ void process(std::vector<fractions::convergent_pair<T>>& queue, int N) {
             assert(boost::multiprecision::pow(pair.alpha.current.den, 5) < boost::math::tools::max_value<BigInt>() / (static_cast<BigInt>(2 * std::pow(N, 8))));
             #endif
 
+            auto cutoff_condition = [result, N](const fractions::convergent<T>& alpha, const fractions::convergent<T>& beta, int next_digit) {
+                return LW::littlewood_cutoff_reached(result.best_q, alpha, beta, next_digit, N);
+            };
+
             // The pair does not match the criteria, so we divide it into N new pairs with larger denominators
             std::vector<fractions::convergent_pair<T>> child_pairs = {};
-            fractions::subdivide(pair, N, child_pairs);
+            fractions::subdivide_with_cutoff_condition(pair, N, cutoff_condition, child_pairs);
             // and add them to the work queue.
             work_queue_mutex.lock();
             // The new pairs are added at the end of the queue so the work is done in a depth-first-ish way,
