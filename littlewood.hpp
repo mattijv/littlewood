@@ -11,9 +11,15 @@ namespace LW {
         T result = 2 * N * Q * (Q + a) * (Q + b);
         return result;
     }
+
+    template <typename T>
+    struct littlewood_result {
+        T best_q;
+        bool meets_criteria;
+    };
     
     template <typename T>
-    bool meets_littlewood_criteria(const fractions::convergent_pair<T>& pair, int N) {
+    littlewood_result<T> meets_littlewood_criteria(const fractions::convergent_pair<T>& pair, int N) {
         
         fractions::convergent<T> alpha = pair.alpha;
         fractions::convergent<T> beta = pair.beta;
@@ -25,9 +31,14 @@ namespace LW {
         
         //Quickly check if the bigger convergent denominator is good
         T alpha_remainder = modular_math::remainder_with_least_absolute_value(beta.current.den, alpha.current);
-        if (littlewood(beta.current.den, static_cast<T>(0), alpha_remainder * (alpha.current.den + alpha.previous.den), N) < epsilon) {
-            return true;
+        T littlewood_quantity = littlewood(beta.current.den, alpha_remainder * alpha_sum, static_cast<T>(0), N);
+        if (littlewood_quantity < epsilon) {
+            return {static_cast<T>(0), true};
         }
+
+        // Track the Q that gives the lowest value for the "Littlewood quantity".
+        T best_q = beta.current.den;
+        T lowest_littlewood_quantity = littlewood_quantity;
 
         T alpha_diff = alpha.current.den - alpha.previous.den;
         T beta_diff = beta.current.den - beta.previous.den;
@@ -54,26 +65,47 @@ namespace LW {
         T max_remainder = 1 + std::max(static_cast<T>(N), pair.beta.previous.den / (N * N));
         T target_remainder = static_cast<T>(1);
         
+
         while (target_remainder < max_remainder) {
 
-            if (littlewood(denominators[0], target_remainder * alpha_sum, std::min(ab_rem, beta.current.den - ab_rem) * beta_sum, N) < epsilon) {
-                return true;
+            littlewood_quantity = littlewood(denominators[0], target_remainder * alpha_sum, std::min(ab_rem, beta.current.den - ab_rem) * beta_sum, N);
+            if (littlewood_quantity < epsilon) {
+                return {static_cast<T>(0), true};
+            } else if (littlewood_quantity < lowest_littlewood_quantity) {
+                lowest_littlewood_quantity = littlewood_quantity;
+                best_q = denominators[0];
             }
 
-            if (littlewood(denominators[1], target_remainder * alpha_sum, std::min(acb_rem, beta.current.den - acb_rem) * beta_sum, N) < epsilon) {
-                return true;
+            littlewood_quantity = littlewood(denominators[1], target_remainder * alpha_sum, std::min(acb_rem, beta.current.den - acb_rem) * beta_sum, N);
+            if (littlewood_quantity < epsilon) {
+                return {static_cast<T>(0), true};
+            } else if (littlewood_quantity < lowest_littlewood_quantity) {
+                lowest_littlewood_quantity = littlewood_quantity;
+                best_q = denominators[1];
             }
 
-            if (littlewood(denominators[2], std::min(ba_rem, alpha.current.den - ba_rem) * alpha_sum, target_remainder * beta_sum, N) < epsilon) {
-                return true;
+            littlewood_quantity = littlewood(denominators[2], std::min(ba_rem, alpha.current.den - ba_rem) * alpha_sum, target_remainder * beta_sum, N);
+            if (littlewood_quantity < epsilon) {
+                return {static_cast<T>(0), true};
+            } else if (littlewood_quantity < lowest_littlewood_quantity) {
+                lowest_littlewood_quantity = littlewood_quantity;
+                best_q = denominators[2];
             }
 
-            if (littlewood(denominators[3], std::min(bca_rem, alpha.current.den - bca_rem) * alpha_sum, target_remainder * beta_sum, N) < epsilon) {
-                return true;
+            littlewood_quantity = littlewood(denominators[3], std::min(bca_rem, alpha.current.den - bca_rem) * alpha_sum, target_remainder * beta_sum, N);
+            if (littlewood_quantity < epsilon) {
+                return {static_cast<T>(0), true};
+            } else if (littlewood_quantity < lowest_littlewood_quantity) {
+                lowest_littlewood_quantity = littlewood_quantity;
+                best_q = denominators[3];
             }
 
-            if (littlewood(target_remainder * alpha.current.den, static_cast<T>(0), std::min(ma_rem, beta.current.den - ma_rem) * beta_sum, N) < epsilon) {
-                return true;
+            littlewood_quantity = littlewood(target_remainder * alpha.current.den, static_cast<T>(0), std::min(ma_rem, beta.current.den - ma_rem) * beta_sum, N);
+            if (littlewood_quantity < epsilon) {
+                return {static_cast<T>(0), true};
+            } else if (littlewood_quantity < lowest_littlewood_quantity) {
+                lowest_littlewood_quantity = littlewood_quantity;
+                best_q = target_remainder * alpha.current.den;
             }
 
             target_remainder++;
@@ -121,7 +153,7 @@ namespace LW {
             ma_rem = modular_math::modular_addition(ma_rem, multiple_alpha, beta.current.den);
         }
         
-        return false;
+        return {best_q, false};
     }
     
 }
