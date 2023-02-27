@@ -199,6 +199,8 @@ std::vector<fractions::convergent_pair<T>> select_bucket(std::vector<fractions::
 
 int main(int argc, char* argv[]) {
 
+    auto start = std::chrono::steady_clock::now();
+
     auto config = parse_cli_arguments(argc, argv);
 
     std::cout << fmt::format(
@@ -250,7 +252,11 @@ int main(int argc, char* argv[]) {
         threads[i].join();
     }
 
-    std::cout << "Done" << std::endl;
+    auto end = std::chrono::steady_clock::now();
+
+    std::chrono::duration<double> elapsed_seconds = end - start;
+
+    std::cout << fmt::format("Done in {:.2f} seconds", elapsed_seconds.count()) << std::endl;
 
     return 0;
 }

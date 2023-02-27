@@ -54,11 +54,9 @@ compile-production: $(fmt_path) $(boost_path)
 	cp build/lw $(run_directory)/
 
 # Run targets
-show-start-time:
-	@date
 
-_run: show-start-time
-	@/usr/bin/time --format="Executed in %E" ./build/lw -N$(N) -j$(threads) -s$(subdivisions) -B$(buckets) -b$(bucket)
+_run:
+	./build/lw -N$(N) -j$(threads) -s$(subdivisions) -B$(buckets) -b$(bucket)
 
 run: compile _run
 
