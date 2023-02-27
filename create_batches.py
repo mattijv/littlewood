@@ -36,9 +36,18 @@ if job_name is None:
 # Ensure batch directory exists
 Path(f"batch/{job_name}").mkdir(parents = True, exist_ok = True)
 
+run_script = """#!/bin/bash
+"""
+
 batch_template = get_batch_template(job_name, project_id, args.time_limit, args.cpus, args.memory_limit, args.N, args.subdivisions, args.buckets)
 for b in range(1, args.buckets + 1):
     file_name = f"batch/{job_name}/{job_name}-bucket-{b}.sh"
+    run_script += f"sbatch {job_name}-bucket-{b}.sh\n"
     content = batch_template.replace("%BUCKET%", str(b))
     with open(file_name, "w") as batch_file:
         batch_file.write(content)
+
+# Write the run script
+run_script_file_name = f"batch/{job_name}/{job_name}-run.sh"
+with open(run_script_file_name, "w") as run_script_file:
+    run_script_file.write(run_script)
