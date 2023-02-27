@@ -155,7 +155,16 @@ namespace LW {
         
         return {best_q, false};
     }
-    
+
+    template <typename T>
+    bool littlewood_cutoff_reached(T best_q, const fractions::convergent<T> alpha, const fractions::convergent<T> beta, int next_digit, int N) {
+        T new_alpha_sum = next_digit * alpha.current.den + alpha.previous.den;
+        T beta_sum = beta.current.den + beta.previous.den;
+        T new_epsilon = alpha.current.den * new_alpha_sum * beta.current.den * beta_sum;
+        T a = new_alpha_sum * modular_math::remainder_with_least_absolute_value(best_q, alpha.current);
+        T b = beta_sum * modular_math::remainder_with_least_absolute_value(best_q, beta.current);
+        return littlewood(best_q, a, b, N) < new_epsilon;
+    }
 }
 
 #endif
