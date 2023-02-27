@@ -47,6 +47,24 @@ namespace fractions {
         }
     }
 
+    template <typename T, typename F>
+    void subdivide_with_cutoff_condition(const convergent_pair<T>& pair, int N, F&& cutoff_condition, std::vector<convergent_pair<T>>& results) {
+        for (int i = 1; i < N; i++) {
+
+            if (i > 1 && cutoff_condition(pair.alpha, pair.beta, i)) {
+                break;
+            }
+
+            convergent next = next_convergent(pair.alpha, static_cast<T>(i));
+
+            if (next.current.den < pair.beta.current.den) {
+                results.push_back({next, pair.beta});
+            } else {
+                results.push_back({pair.beta, next});
+            }
+        }
+    }
+
     template <typename T>
     std::vector<convergent_pair<T>> convergent_pairs(int N, uint subdivisions = 0) {
         std::vector<convergent<T>> convergents = {};
