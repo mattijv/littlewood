@@ -36,24 +36,13 @@ namespace fractions {
 
     template <typename T>
     void subdivide(const convergent_pair<T>& pair, int N, std::vector<convergent_pair<T>>& results) {
-        convergent<T> primary;
-        convergent<T> secondary;
-
-        if (pair.alpha.current.den < pair.beta.current.den) {
-            primary = pair.alpha;
-            secondary = pair.beta;
-        } else {
-            primary = pair.beta;
-            secondary = pair.alpha;
-        }
-
         for (int i = 1; i < N; i++) {
-            convergent next = next_convergent(primary, static_cast<T>(i));
-            
-            if (next.current.den < secondary.current.den) {
-                results.push_back({next, secondary});
+            convergent next = next_convergent(pair.alpha, static_cast<T>(i));
+
+            if (next.current.den < pair.beta.current.den) {
+                results.push_back({next, pair.beta});
             } else {
-                results.push_back({secondary, next});
+                results.push_back({pair.beta, next});
             }
         }
     }
