@@ -7,6 +7,10 @@ boost_directory = boost_1_81_0
 boost_archive = $(boost_directory).tar.gz
 boost_path = $(deps_directory)/$(boost_directory)
 
+# CSC variables
+project = project_2007026
+run_directory = /projappl/$(project)/littlewood
+
 # Compilation options
 compiler = g++
 debug = -g
@@ -43,6 +47,11 @@ compile-fixed: $(fmt_path) $(boost_path)
 
 compile-fixed-safe: $(fmt_path) $(boost_path)
 	$(compiler) $(debug) $(common_flags) $(boost_lib) $(target) $(output) -DFIXED_WIDTH_INTEGERS -DINTEGER_WIDTH=$(bits) -DOVERFLOW_PROTECTION
+
+compile-production: $(fmt_path) $(boost_path)
+	$(compiler) $(common_flags) $(boost_lib) $(target) $(output) -DFIXED_WIDTH_INTEGERS -DINTEGER_WIDTH=$(bits) -DOVERFLOW_PROTECTION
+	mkdir -p $(run_directory)
+	cp build/lw $(run_directory)/
 
 # Run targets
 show-start-time:
