@@ -3,3 +3,4 @@ build/*
 batch/*
 !build/.gitkeep
 .vscode/
+results/
