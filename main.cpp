@@ -12,6 +12,7 @@
 #include "dependencies/fmt/include/fmt/format.h"
 #include "fractions.hpp"
 #include "littlewood.hpp"
+#include "visualisation.hpp"
 
 #ifdef FIXED_WIDTH_INTEGERS
 #ifndef INTEGER_WIDTH
@@ -49,11 +50,12 @@ struct configuration {
     uint subdivisions;
     uint buckets;
     uint bucket;
+    bool only_print_initial_pairs;
 };
 
 // Very naive CLI argument parser
 configuration parse_cli_arguments(int argc, char* argv[]) {
-    configuration config = {10, 1, 0, 1, 1};
+    configuration config = {10, 1, 0, 1, 1, false};
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
             auto argument = std::string(argv[i]);
@@ -68,6 +70,8 @@ configuration parse_cli_arguments(int argc, char* argv[]) {
                 config.buckets = std::stoi(argument.substr(2));
             } else if (handle == "-b") {
                 config.bucket = std::stoi(argument.substr(2));
+            } else if (handle == "-p") {
+                config.only_print_initial_pairs = true;
             }
         }
     }
@@ -241,6 +245,13 @@ int main(int argc, char* argv[]) {
         config.bucket,
         bucket.size()
     ) << std::endl;
+
+    if (config.only_print_initial_pairs) {
+        for (size_t i = 0; i < bucket.size(); i++) {
+            std::cout << visualisation::string_representation(bucket[i]).str() << std::endl;
+        }
+        return 0;
+    }
 
     thread_count = config.n_threads;
 

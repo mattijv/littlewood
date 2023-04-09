@@ -63,3 +63,6 @@ run: compile _run
 run-fixed: compile-fixed _run
 
 run-fixed-safe: compile-fixed-safe _run
+
+print-pairs: compile-fixed
+	./build/lw -N$(N) -s$(subdivisions) -B$(buckets) -b$(bucket) -p
