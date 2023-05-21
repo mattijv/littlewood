@@ -4,3 +4,5 @@ batch/*
 !build/.gitkeep
 .vscode/
 results/
+report/
+scratch/
