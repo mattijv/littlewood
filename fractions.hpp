@@ -67,26 +67,56 @@ namespace fractions {
 
     template <typename T>
     std::vector<convergent_pair<T>> convergent_pairs(int N, uint subdivisions = 0) {
-        std::vector<convergent<T>> convergents = {};
         
+        std::vector<convergent<T>> candidates = {};
+        // Create an initial set of candidate convergents.
         for (int i = 2; i < N; i++) {
-            convergents.push_back({
+            candidates.push_back({
                 {static_cast<T>(1), static_cast<T>(i)},
                 {static_cast<T>(0), static_cast<T>(1)}
             });
         }
+
+        std::vector<convergent<T>> convergents = {};
+
+        // "Refine" the initial set of candidates until we have a vector of convergents where
+        // all of them have a denominator >= 2 * N.
+        while (candidates.size() > 0) {
+            // Pop a candidate from the end of the vector.
+            auto candidate = std::move(candidates.back());
+            candidates.pop_back();
+            // If the denominator of the candidate is equal or larger than 2 * N, add it to the vector of convergents.
+            if (candidate.current.den >= 2 * N) {
+                convergents.push_back(candidate);
+            } else {
+                // Otherwise, we need to replace the candidate with the next iterations of the continued fraction
+                // for all the following digits i where 1 <= i < N.
+                for (int i = 1; i < N; i++) {
+                    candidates.push_back(next_convergent(candidate, static_cast<T>(i)));
+                }
+            }
+        }
         
         std::vector<convergent_pair<T>> pairs = {};
         
-        for (std::size_t i = 0; i < convergents.size(); i++) {
-            for (std::size_t j = 0; j <= i; j++) {
+        // Make a list of all unique pairs of convergents.
+        for (std::size_t i = 1; i < convergents.size(); i++) {
+            for (std::size_t j = 0; j < i; j++) {
                 convergent<T> a = convergents[i];
                 convergent<T> b = convergents[j];
                 
-                if (a.current.den * b.current.den >= 2 * N) {
+
+                // We can skip all the pairs where the condition (a_den/a_num) * (b_den/b_num) >= 2 * N,
+                // as they will trivially fullfil the Littlewood criteria. (The condition is rewritten here to avoid
+                // doing divisions.)
+                T denominator_product = a.current.den * b.current.den;
+                T numerator_product = a.current.num * b.current.num;
+
+                if (denominator_product >= 2 * N * numerator_product) {
                     continue;
                 }
 
+                // Order the pair always so that the first convergent is the one with the smaller denominator.
                 if (a.current.den < b.current.den) {
                     pairs.push_back({a, b});
                 } else {
