@@ -95,6 +95,10 @@ namespace fractions {
             }
         }
 
+        // Optionally we can "subdivide" the pairs further (by replacing the pair with a list of pairs resulting
+        // from replacing the first convergent in the pair with its following continued fraction iterations).
+        // This has no mathematical bearing, but it allows us to split the computation over more CPU cores as
+        // we'll begin the calcuation with a larger initial set of convergent pairs.
         if (subdivisions > 0) {
             for (uint i = 0; i < subdivisions; i++) {
                 std::vector<convergent_pair<T>> next = {};

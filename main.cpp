@@ -14,6 +14,9 @@
 #include "littlewood.hpp"
 #include "visualisation.hpp"
 
+// This program can use either fixed width integers (i.e. integers that have a finite number of bits),
+// or arbitrary precision integrers.
+// The supported fixed width types are the 128, 256, 512 and 1024 bit integers from Boost.
 #ifdef FIXED_WIDTH_INTEGERS
 #ifndef INTEGER_WIDTH
 #define INTEGER_WIDTH 1024
@@ -31,6 +34,7 @@ using BigInt = boost::multiprecision::int1024_t;
 #endif
 #endif
 
+// For arbitrary precision integers we use the NTL/ZZ types.
 #ifndef FIXED_WIDTH_INTEGERS
 #include <NTL/ZZ.h>
 #define ARBITRARY_WIDTH_INTEGERS
@@ -44,6 +48,7 @@ std::mutex thread_status_mutex;
 int thread_count = 1;
 int done_thread_count = 0;
 
+// The supported configuration options.
 struct configuration {
     int N;
     uint n_threads;
@@ -76,6 +81,8 @@ configuration parse_cli_arguments(int argc, char* argv[]) {
         }
     }
 
+    // Limit the number of threads to the concurrency supported by the hardware.
+    // Running on more threads would not make sense.
     assert(config.n_threads <= std::thread::hardware_concurrency());
     assert(config.N > 0);
     assert(config.buckets >= 1);
