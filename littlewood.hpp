@@ -62,7 +62,7 @@ namespace LW {
         T bca_rem = beta_den_comp_alpha_num;
         T ma_rem = multiple_alpha;
 
-        T max_remainder = 1 + std::max(static_cast<T>(N), pair.beta.previous.den / (N * N));
+        T max_remainder = static_cast<T>(1) + std::max(static_cast<T>(N), pair.beta.previous.den / (2 * N * N));
         T target_remainder = static_cast<T>(1);
         
 
