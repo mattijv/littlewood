@@ -80,13 +80,15 @@ namespace fractions {
         std::vector<convergent<T>> convergents = {};
 
         // "Refine" the initial set of candidates until we have a vector of convergents where
-        // all of them have a denominator >= 2 * N.
+        // all of them have a sum of the denominators of the current and previous
+        // iteration >= 2 * N.
         while (candidates.size() > 0) {
             // Pop a candidate from the end of the vector.
             auto candidate = std::move(candidates.back());
             candidates.pop_back();
-            // If the denominator of the candidate is equal or larger than 2 * N, add it to the vector of convergents.
-            if (candidate.current.den >= 2 * N) {
+            // If the sum of the denominators of the current and previous step of the of the candidate convergent
+            // are equal or larger than 2 * N, add it to the vector of convergents.
+            if (candidate.current.den + candidate.previous.den >= 2 * N) {
                 convergents.push_back(candidate);
             } else {
                 // Otherwise, we need to replace the candidate with the next iterations of the continued fraction
