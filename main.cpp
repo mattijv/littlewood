@@ -161,7 +161,7 @@ void process(std::vector<fractions::convergent_pair<T>>& queue, int N) {
             #if defined(FIXED_WIDTH_INTEGERS) && defined(OVERFLOW_PROTECTION)
             // If we are using fixed width integers, this check should guarantee that we can't overflow the
             // integer in the next iteration.
-            assert(boost::multiprecision::pow(pair.beta.current.den, 5) < boost::math::tools::max_value<BigInt>() / (static_cast<BigInt>(8 * std::pow(N, 6))));
+            assert(boost::multiprecision::pow(pair.beta.current.den, 6) < boost::math::tools::max_value<BigInt>() / (static_cast<BigInt>(8 * std::pow(N, 7))));
             #endif
 
             auto cutoff_condition = [result, N](const fractions::convergent<T>& alpha, const fractions::convergent<T>& beta, int next_digit) {
