@@ -14,7 +14,7 @@ run_directory = /projappl/$(project)/littlewood
 # Compilation options
 compiler = g++
 debug = -g
-common_flags = -O2 -std=c++20 -pthread -march=native
+common_flags = -O3 -std=c++20 -pthread -march=native
 gmp_libs = -lntl -lgmp
 boost_lib = -I $(boost_path)
 target = main.cpp
