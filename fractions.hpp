@@ -109,12 +109,11 @@ namespace fractions {
                 
 
                 // We can skip all the pairs where the condition (a_den/a_num) * (b_den/b_num) >= 2 * N,
-                // as they will trivially fullfil the Littlewood criteria. (The condition is rewritten here to avoid
-                // doing divisions.)
-                T denominator_product = a.current.den * b.current.den;
-                T numerator_product = a.current.num * b.current.num;
+                // as they will trivially fullfil the Littlewood criteria.
+                T alpha_ratio = a.current.den / a.current.num;
+                T beta_ratio = b.current.den / b.current.num;
 
-                if (denominator_product >= 2 * N * numerator_product) {
+                if (alpha_ratio * beta_ratio >= 2 * N) {
                     continue;
                 }
 
