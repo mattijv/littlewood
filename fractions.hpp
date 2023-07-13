@@ -4,25 +4,28 @@
 #include <vector>
 
 namespace fractions {
-
+    //Template for rational numbers as pairs of integers
     template <typename T>
     struct rational {
         T num;
         T den;
     };
 
+    //Template for convergents as pairs of two consecutive convergents, e.g. (A_n/B_n, A_{n-1}/B_{n-1})
     template <typename T>
     struct convergent {
         rational<T> current;
         rational<T> previous;
     };
 
+    //Template for pairs of convergents (A_n/B_n, C_m/D_m)
     template <typename T>
     struct convergent_pair {
         convergent<T> alpha;
         convergent<T> beta;
     };
 
+    //Template for calculating the next convergent from two previous ones (A_{n+1}=b_{n+1}A_n+A_{n-1} and B_{n+1}=b_{n+1}B_n+B_{n-1}) 
     template <typename T>
     convergent<T> next_convergent(const convergent<T>& base, T digit) {
         return {
@@ -34,6 +37,8 @@ namespace fractions {
         };
     }
 
+    //Template for dividing a pair of convergents into N-1 new pairs (Step 2c in the algorithm: ([0;b_1,\ldots,b_n], [0;d_1,\ldots,d_m]) is replaced with ([0;b_1,\ldots,b_n,t], [0;d_1,\ldots,d_m])
+    //for 1<=t<=N-1. Also the new pairs are rearranged so that B_n<=D_m)
     template <typename T>
     void subdivide(const convergent_pair<T>& pair, int N, std::vector<convergent_pair<T>>& results) {
         for (int i = 1; i < N; i++) {
@@ -47,6 +52,7 @@ namespace fractions {
         }
     }
 
+    //Template for dividing a pair of convergents into new pairs after checking the improved condition (inequality 4.3 in the article) 
     template <typename T, typename F>
     void subdivide_with_cutoff_condition(const convergent_pair<T>& pair, int N, F&& cutoff_condition, std::vector<convergent_pair<T>>& results) {
         for (int i = 1; i < N; i++) {
