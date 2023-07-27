@@ -152,7 +152,7 @@ void process(std::vector<fractions::convergent_pair<T>>& queue, int N) {
 
             // The pair does not match the criteria, so we divide it into N new pairs with larger denominators
             std::vector<fractions::convergent_pair<T>> child_pairs = {};
-            fractions::subdivide_with_cutoff_condition(pair, N, cutoff_condition, child_pairs);
+            fractions::subdivide(pair, N, cutoff_condition, child_pairs);
             // and add them to the work queue.
             work_queue_mutex.lock();
             // The new pairs are added at the end of the queue so the work is done in a depth-first-ish way,
