@@ -26,7 +26,6 @@ bits ?= 256
 # Run options
 N ?= 9
 threads ?= 1
-subdivisions = 0
 buckets ?= 1
 bucket ?= 1
 
@@ -58,7 +57,7 @@ compile-production: $(fmt_path) $(boost_path)
 # Run targets
 
 _run:
-	./build/lw -N$(N) -j$(threads) -s$(subdivisions) -B$(buckets) -b$(bucket)
+	./build/lw -N$(N) -j$(threads) -B$(buckets) -b$(bucket)
 
 run: compile _run
 
@@ -67,4 +66,4 @@ run-fixed: compile-fixed _run
 run-fixed-safe: compile-fixed-safe _run
 
 print-pairs: compile-fixed
-	./build/lw -N$(N) -s$(subdivisions) -B$(buckets) -b$(bucket) -p
+	./build/lw -N$(N) -B$(buckets) -b$(bucket) -p

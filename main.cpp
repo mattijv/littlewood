@@ -56,7 +56,6 @@ int done_thread_count = 0;
 struct configuration {
     int N;
     uint n_threads;
-    uint subdivisions;
     uint buckets;
     uint bucket;
     bool only_print_initial_pairs;
@@ -73,8 +72,6 @@ configuration parse_cli_arguments(int argc, char* argv[]) {
                 config.N = std::stoi(argument.substr(2));
             } else if (handle == "-j") {
                 config.n_threads = std::stoi(argument.substr(2));
-            } else if (handle == "-s") {
-                config.subdivisions = std::stoi(argument.substr(2));
             } else if (handle == "-B") {
                 config.buckets = std::stoi(argument.substr(2));
             } else if (handle == "-b") {
@@ -242,10 +239,9 @@ int main(int argc, char* argv[]) {
     ) << std::endl;
     #endif
 
-    auto pairs = fractions::convergent_pairs<BigInt>(config.N, config.subdivisions);
+    auto pairs = fractions::convergent_pairs<BigInt>(config.N);
     std::cout << fmt::format(
-        "Initial pairs (from {} subdivisions): {}",
-        config.subdivisions,
+        "Initial pairs: {}",
         pairs.size()
     ) << std::endl;
 

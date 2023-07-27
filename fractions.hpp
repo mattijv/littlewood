@@ -73,7 +73,7 @@ namespace fractions {
      * This method implements generating the initial set of pairs, as described in step 1 of the algorithm in the article
      */
     template <typename T>
-    std::vector<convergent_pair<T>> convergent_pairs(int N, uint subdivisions = 0) {
+    std::vector<convergent_pair<T>> convergent_pairs(int N) {
         
         std::vector<convergent<T>> candidates = {};
         // Create an initial set of candidate convergents.
@@ -130,20 +130,6 @@ namespace fractions {
                 } else {
                     pairs.push_back({b, a});
                 }
-            }
-        }
-
-        // Optionally we can "subdivide" the pairs further (by replacing the pair with a list of pairs resulting
-        // from replacing the first convergent in the pair with its following continued fraction iterations).
-        // This has no mathematical bearing, but it allows us to split the computation over more CPU cores as
-        // we'll begin the calcuation with a larger initial set of convergent pairs.
-        if (subdivisions > 0) {
-            for (uint i = 0; i < subdivisions; i++) {
-                std::vector<convergent_pair<T>> next = {};
-                for (auto& pair: pairs) {
-                    subdivide(pair, N, next);
-                }
-                swap(next, pairs);
             }
         }
         
