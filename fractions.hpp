@@ -1,3 +1,7 @@
+/**
+ * Copyright 2023 Topi Törmä, Matti Vapa
+ */
+
 #ifndef FRACTIONS
 #define FRACTIONS
 

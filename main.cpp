@@ -1,3 +1,7 @@
+/**
+ * Copyright 2023 Topi Törmä, Matti Vapa
+ */
+
 #include <iostream>
 #include <span>
 #include <thread>

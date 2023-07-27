@@ -1,3 +1,5 @@
+# Copyright 2023 Matti Vapa
+
 # Dependencies
 deps_directory = dependencies
 fmt_path = $(deps_directory)/fmt
