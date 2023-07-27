@@ -69,6 +69,9 @@ namespace fractions {
         }
     }
 
+    /**
+     * This method implements generating the initial set of pairs, as described in step 1 of the algorithm in the article
+     */
     template <typename T>
     std::vector<convergent_pair<T>> convergent_pairs(int N, uint subdivisions = 0) {
         

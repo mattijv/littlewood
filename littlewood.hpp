@@ -33,7 +33,8 @@ namespace LW {
 
         T epsilon = alpha.current.den * alpha_sum * beta.current.den * beta_sum;
         
-        //Quickly check if the bigger convergent denominator is good
+        // Quickly check if the bigger convergent denominator is good.
+        // Corresponds to step 2 (a) of the algorithm in the paper.
         T alpha_remainder = modular_math::remainder_with_least_absolute_value(beta.current.den, alpha.current);
         T littlewood_quantity = littlewood(beta.current.den, alpha_remainder * alpha_sum, static_cast<T>(0), N);
         if (littlewood_quantity < epsilon) {
@@ -66,12 +67,16 @@ namespace LW {
         T bca_rem = beta_den_comp_alpha_num;
         T ma_rem = multiple_alpha;
 
+        // max_remainder corresponds to the "suitably large integer" described in step 2 (b) of the algorithm in the article.
+        // Specifically this corresponds to M + 1 to make the condition of the while loop below a bit neater.
         T max_remainder = static_cast<T>(1) + std::max(static_cast<T>(N), pair.beta.previous.den / (2 * N * N));
+        // target_remainder corresponds to the r described in step 2 (b) of the algorithm in the article.
         T target_remainder = static_cast<T>(1);
         
-
+        // Check all r, where 1 <= r <= M
         while (target_remainder < max_remainder) {
 
+            // The following checks correspond to the substeps i - v in the step 2 (b) of the algorithm.
             littlewood_quantity = littlewood(denominators[0], target_remainder * alpha_sum, std::min(ab_rem, beta.current.den - ab_rem) * beta_sum, N);
             if (littlewood_quantity < epsilon) {
                 return {static_cast<T>(0), true};
@@ -113,6 +118,8 @@ namespace LW {
             }
 
             target_remainder++;
+
+            // The following section uses recursive properties to minimize the need to perform modulo operations.
 
             T ab_sum = denominators[0] + alpha.previous.den;
 
@@ -157,9 +164,13 @@ namespace LW {
             ma_rem = modular_math::modular_addition(ma_rem, multiple_alpha, beta.current.den);
         }
         
+        // The current pair did not meet the Littlewood criteria for any value of r, so we just return the best q.
         return {best_q, false};
     }
 
+    /**
+     * The cutoff method implements the check using equation (31) of the article
+     */
     template <typename T>
     bool littlewood_cutoff_reached(T best_q, const fractions::convergent<T> alpha, const fractions::convergent<T> beta, int next_digit, int N) {
         T new_alpha_sum = next_digit * alpha.current.den + alpha.previous.den;

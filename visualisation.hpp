@@ -10,6 +10,9 @@
 
 namespace visualisation {
 
+    /**
+     * This method will print a convergent pair in the format "{a/b, c/d}, {e/f, g/h}"
+     */
     template <typename T>
     std::stringstream string_representation(const fractions::convergent_pair<T>& pair) {
         std::stringstream output;
