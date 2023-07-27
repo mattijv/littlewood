@@ -10,7 +10,7 @@ boost_archive = $(boost_directory).tar.gz
 boost_path = $(deps_directory)/$(boost_directory)
 
 # CSC variables
-project = project_2007026
+project ?= project_xxxxxxx
 run_directory = /projappl/$(project)/littlewood
 
 # Compilation options
