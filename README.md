@@ -1,4 +1,4 @@
-# Littlewood conjecture
+# Computational investigation of the Littlewood conjecture
 
 This repo contains an implementation of the algorithm presented in "An upper
 bound for the Littlewood quantity" (Matala-aho, Törmä, Vapa, 2023) (link
