@@ -63,7 +63,7 @@ struct configuration {
 
 // Very naive CLI argument parser
 configuration parse_cli_arguments(int argc, char* argv[]) {
-    configuration config = {10, 1, 0, 1, 1, false};
+    configuration config = {10, 1, 1, 1, false};
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
             auto argument = std::string(argv[i]);
