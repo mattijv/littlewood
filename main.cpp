@@ -91,25 +91,6 @@ configuration parse_cli_arguments(int argc, char* argv[]) {
     return config;
 }
 
-template <typename T>
-void check_pair(const fractions::convergent_pair<T>& pair, int depth, int N) {
-    if (LW::meets_littlewood_criteria(pair, N)) {
-        return;
-    }
-
-    #if defined(FIXED_WIDTH_INTEGERS) && defined(OVERFLOW_PROTECTION)
-    // If we are using fixed width integers, this check should guarantee that we can't overflow the
-    // integer in the next iteration.
-    assert(boost::multiprecision::pow(pair.alpha.current.den, 5) < boost::math::tools::max_value<BigInt>() / (static_cast<BigInt>(2 * std::pow(N, 8))));
-    #endif
-
-    std::vector<fractions::convergent_pair<T>> child_pairs = {};
-    fractions::subdivide(pair, N, child_pairs);
-    for(auto& child_pair: child_pairs) {
-        check_pair(child_pair, depth + 1, N);
-    }
-}
-
 bool all_threads_done() {
     thread_status_mutex.lock();
     bool all_done = thread_count == done_thread_count;
