@@ -8,7 +8,8 @@ using continued fractions.
 
 The code depends on [GMP](https://gmplib.org/) for the arbitrary precision
 integer math, and on [Boost](https://www.boost.org/) for wide fixed width
-integer math.
+integer math. Note that only the fixed width integers were used in the
+production run of this code.
 
 The code uses [{fmt}](https://github.com/fmtlib/fmt) for string formatting.
 
